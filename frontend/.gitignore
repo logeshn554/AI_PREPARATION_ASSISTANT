@@ -1,0 +1,6 @@
+# AI Interview Preparation System
+node_modules/
+dist/
+build/
+*.log
+.DS_Store

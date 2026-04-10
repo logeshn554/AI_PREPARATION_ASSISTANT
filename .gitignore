@@ -1,0 +1,76 @@
+# .gitignore
+
+# Backend
+backend/__pycache__/
+backend/*.py[cod]
+backend/*$py.class
+backend/*.so
+backend/.Python
+backend/build/
+backend/develop-eggs/
+backend/dist/
+backend/downloads/
+backend/eggs/
+backend/.eggs/
+backend/lib/
+backend/lib64/
+backend/parts/
+backend/sdist/
+backend/var/
+backend/wheels/
+backend/pip-wheel-metadata/
+backend/share/python-wheels/
+backend/*.egg-info/
+backend/.installed.cfg
+backend/*.egg
+backend/MANIFEST
+backend/env/
+backend/venv/
+backend/.venv
+backend/ENV/
+backend/env.bak/
+backend/venv.bak/
+backend/.env
+backend/.env.local
+backend/.vscode/
+backend/.idea/
+backend/*.log
+backend/instance/
+backend/.pytest_cache/
+backend/.coverage
+backend/htmlcov/
+
+# Frontend
+frontend/node_modules/
+frontend/.env
+frontend/.env.local
+frontend/.env.*.local
+frontend/dist/
+frontend/dist-ssr/
+frontend/*.local
+frontend/.DS_Store
+frontend/.eslintcache
+frontend/.parcelcache
+frontend/build/
+frontend/coverage/
+frontend/.nyc_output/
+
+# Database
+database/*.sql.backup
+database/data/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# OS
+Thumbs.db
+
+# Misc
+*.log
+.cache/
+.temp/
