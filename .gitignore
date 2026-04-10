@@ -1,76 +1,95 @@
-# .gitignore
-
-# Backend
-backend/__pycache__/
-backend/*.py[cod]
-backend/*$py.class
-backend/*.so
-backend/.Python
-backend/build/
-backend/develop-eggs/
-backend/dist/
-backend/downloads/
-backend/eggs/
-backend/.eggs/
-backend/lib/
-backend/lib64/
-backend/parts/
-backend/sdist/
-backend/var/
-backend/wheels/
-backend/pip-wheel-metadata/
-backend/share/python-wheels/
-backend/*.egg-info/
-backend/.installed.cfg
-backend/*.egg
-backend/MANIFEST
-backend/env/
-backend/venv/
-backend/.venv
-backend/ENV/
-backend/env.bak/
-backend/venv.bak/
-backend/.env
-backend/.env.local
-backend/.vscode/
-backend/.idea/
-backend/*.log
-backend/instance/
-backend/.pytest_cache/
-backend/.coverage
-backend/htmlcov/
-
-# Frontend
-frontend/node_modules/
-frontend/.env
-frontend/.env.local
-frontend/.env.*.local
-frontend/dist/
-frontend/dist-ssr/
-frontend/*.local
-frontend/.DS_Store
-frontend/.eslintcache
-frontend/.parcelcache
-frontend/build/
-frontend/coverage/
-frontend/.nyc_output/
-
-# Database
-database/*.sql.backup
-database/data/
-
-# IDEs
-.vscode/
+# ----------------------------
+# OS and editor files
+# ----------------------------
+.DS_Store
+Thumbs.db
+desktop.ini
 .idea/
+.vscode/
 *.swp
 *.swo
 *~
-.DS_Store
 
-# OS
-Thumbs.db
-
-# Misc
+# ----------------------------
+# Logs and temp artifacts
+# ----------------------------
 *.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
 .cache/
 .temp/
+tmp/
+
+# ----------------------------
+# Environment files
+# Keep template env files committed
+# ----------------------------
+.env
+.env.*
+!.env.example
+!**/.env.example
+
+# ----------------------------
+# Python backend artifacts
+# ----------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.pyre/
+.hypothesis/
+.tox/
+.nox/
+.coverage
+.coverage.*
+htmlcov/
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# Packaging/build output
+build/
+dist/
+sdist/
+wheels/
+pip-wheel-metadata/
+.eggs/
+*.egg-info/
+*.egg
+
+# Backend-specific runtime files
+backend/instance/
+
+# ----------------------------
+# Frontend (Vite/Node) artifacts
+# ----------------------------
+node_modules/
+frontend/node_modules/
+frontend/dist/
+frontend/dist-ssr/
+frontend/build/
+frontend/coverage/
+frontend/.nyc_output/
+frontend/.vite/
+frontend/.eslintcache
+frontend/.parcel-cache/
+frontend/*.local
+
+# ----------------------------
+# Local database and backups
+# ----------------------------
+*.db
+*.sqlite3
+database/*.sql.backup
+database/data/
