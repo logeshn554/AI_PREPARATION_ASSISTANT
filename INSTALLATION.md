@@ -130,13 +130,13 @@ pip install -r requirements.txt
 python -m spacy download en_core_web_sm
 
 # Set database URL (Windows PowerShell)
-$env:DATABASE_URL="postgresql://postgres:password@localhost:5432/ai_interview_db"
+$env:DATABASE_URL="postgresql://postgres:<your_postgres_password>@localhost:5432/ai_interview_db"
 
 # Or Windows CMD
-set DATABASE_URL=postgresql://postgres:password@localhost:5432/ai_interview_db
+set DATABASE_URL=postgresql://postgres:<your_postgres_password>@localhost:5432/ai_interview_db
 
 # Or macOS/Linux
-export DATABASE_URL="postgresql://postgres:password@localhost:5432/ai_interview_db"
+export DATABASE_URL="postgresql://postgres:<your_postgres_password>@localhost:5432/ai_interview_db"
 
 # Test run
 python run.py
@@ -258,7 +258,7 @@ CMD ["nginx", "-g", "daemon off;"]
 ### Backend (.env or System Variables)
 
 ```
-DATABASE_URL=postgresql://user:password@host:5432/ai_interview_db
+DATABASE_URL=postgresql://<db_user>:<db_password>@<db_host>:5432/ai_interview_db
 ```
 
 ### Frontend (.env)
@@ -278,7 +278,7 @@ where postgres
 netstat -ano | findstr :5432
 
 # Try different port in DATABASE_URL
-postgresql://postgres:password@localhost:5433/ai_interview_db
+postgresql://postgres:<your_postgres_password>@localhost:5433/ai_interview_db
 ```
 
 ### Python Venv Issues

@@ -26,10 +26,10 @@ python -m spacy download en_core_web_sm
 
 ```bash
 # Set environment variable
-set DATABASE_URL=postgresql://postgres:password@localhost:5432/ai_interview_db
+set DATABASE_URL=postgresql://postgres:<your_postgres_password>@localhost:5432/ai_interview_db
 
 # Or Windows PowerShell
-$env:DATABASE_URL="postgresql://postgres:password@localhost:5432/ai_interview_db"
+$env:DATABASE_URL="postgresql://postgres:<your_postgres_password>@localhost:5432/ai_interview_db"
 ```
 
 ### 4. Run Server
@@ -151,7 +151,7 @@ For production, consider using Alembic for migrations.
 ## Environment Variables
 
 ```
-DATABASE_URL=postgresql://user:password@host:port/dbname
+DATABASE_URL=postgresql://<db_user>:<db_password>@<db_host>:<db_port>/<db_name>
 ```
 
 ## Error Handling

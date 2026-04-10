@@ -68,8 +68,12 @@ pip install -q -r requirements.txt
 echo "Installing spaCy model..."
 python -m spacy download -q en_core_web_sm
 
-# Set database URL
-export DATABASE_URL="postgresql://postgres:password@localhost:5432/ai_interview_db"
+# Set database URL from environment (no hardcoded password)
+DB_PASSWORD="${DB_PASSWORD:-change_me}"
+if [ "$DB_PASSWORD" = "change_me" ]; then
+    echo "[WARNING] Using placeholder DB_PASSWORD. Set DB_PASSWORD before production use."
+fi
+export DATABASE_URL="postgresql://postgres:${DB_PASSWORD}@localhost:5432/ai_interview_db"
 
 echo "[OK] Backend ready"
 

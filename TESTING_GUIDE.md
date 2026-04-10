@@ -551,7 +551,7 @@ jobs:
       - name: Run tests
         run: pytest backend/
         env:
-          DATABASE_URL: postgresql://postgres:postgres@localhost/test_db
+          DATABASE_URL: postgresql://postgres:<test_db_password>@localhost/test_db
 ```
 
 ## Stress Testing

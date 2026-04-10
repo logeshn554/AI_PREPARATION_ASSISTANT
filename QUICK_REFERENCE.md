@@ -134,7 +134,7 @@ chmod +x START.sh
 
 ### Backend .env
 ```
-DATABASE_URL=postgresql://postgres:password@localhost:5432/ai_interview_db
+DATABASE_URL=postgresql://postgres:<your_postgres_password>@localhost:5432/ai_interview_db
 ```
 
 ### Frontend .env

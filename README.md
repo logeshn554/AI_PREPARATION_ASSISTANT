@@ -216,7 +216,7 @@ id (PK) | user_id (FK) | question_id (FK) | answer_text | score | feedback | imp
 
 Backend (.env or environment):
 ```
-DATABASE_URL=postgresql://postgres:password@localhost:5432/ai_interview_db
+DATABASE_URL=postgresql://postgres:<your_postgres_password>@localhost:5432/ai_interview_db
 ```
 
 Frontend (.env):

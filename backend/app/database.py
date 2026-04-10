@@ -5,7 +5,7 @@ from app.models.base import Base
 
 DATABASE_URL = os.getenv(
     "DATABASE_URL",
-    "postgresql://postgres:password@localhost:5432/ai_interview_db"
+    "postgresql://postgres@localhost:5432/ai_interview_db"
 )
 
 engine = create_engine(DATABASE_URL, echo=False)
