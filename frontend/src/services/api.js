@@ -9,11 +9,23 @@ const api = axios.create({
   },
 })
 
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token')
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`
+  }
+  return config
+})
+
 export const authAPI = {
   register: (name, email, password) =>
     api.post('/auth/register', { name, email, password }),
   login: (email, password) =>
     api.post('/auth/login', { email, password }),
+  googleLogin: (idToken) =>
+    api.post('/auth/google', { id_token: idToken }),
+  me: () =>
+    api.get('/auth/me'),
 }
 
 export const resumeAPI = {
@@ -65,6 +77,73 @@ export const answerAPI = {
 export const dashboardAPI = {
   getDashboard: (userId) =>
     api.get(`/dashboard/${userId}`),
+}
+
+export const quizAPI = {
+  generate: (userId, role, skills, numQuestions = 10) =>
+    api.post(`/quiz/generate?user_id=${userId}`, {
+      role,
+      skills,
+      num_questions: numQuestions,
+    }),
+  submit: (sessionId, answers, totalTimeSeconds = 0) =>
+    api.post(`/quiz/${sessionId}/submit`, {
+      answers,
+      total_time_seconds: totalTimeSeconds,
+    }),
+  getSession: (sessionId) =>
+    api.get(`/quiz/${sessionId}`),
+}
+
+export const companyAPI = {
+  prepare: (companyName, role = '', refresh = false) =>
+    api.post('/company/prepare', {
+      company_name: companyName,
+      role: role || null,
+      refresh,
+    }),
+  get: (companyName) =>
+    api.get(`/company/${companyName}`),
+}
+
+export const mockTestAPI = {
+  create: (userId, companyName, role, skills, numQuestions = 12, durationMinutes = 45) =>
+    api.post(`/mock-tests/create?user_id=${userId}`, {
+      company_name: companyName,
+      role,
+      skills,
+      num_questions: numQuestions,
+      duration_minutes: durationMinutes,
+    }),
+  submit: (testId, answers, totalTimeSeconds = 0) =>
+    api.post(`/mock-tests/${testId}/submit`, {
+      answers,
+      total_time_seconds: totalTimeSeconds,
+    }),
+  get: (testId) =>
+    api.get(`/mock-tests/${testId}`),
+}
+
+export const analyticsAPI = {
+  getUserAnalytics: (userId) =>
+    api.get(`/analytics/${userId}`),
+}
+
+export const aiInterviewerAPI = {
+  chat: (payload) =>
+    api.post('/ai-interviewer/chat', payload),
+}
+
+export const challengeAPI = {
+  today: () =>
+    api.get('/challenges/today'),
+  submit: (userId, challengeId, answerText) =>
+    api.post(`/challenges/submit?user_id=${userId}`, {
+      challenge_id: challengeId,
+      answer_text: answerText,
+    }),
+  leaderboard: (limit = 20) =>
+    api.get(`/leaderboard?limit=${limit}`),
 }
 
 export default api

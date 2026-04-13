@@ -18,6 +18,7 @@ class ResumeResponse(ResumeBase):
     skills: Optional[List[str]] = None
     experience: Optional[List[dict]] = None
     projects: Optional[List[dict]] = None
+    ats_score: Optional[float] = None
     created_at: datetime
     updated_at: datetime
     

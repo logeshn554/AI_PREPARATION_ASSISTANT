@@ -30,6 +30,9 @@ set DATABASE_URL=postgresql://postgres:<your_postgres_password>@localhost:5432/a
 
 # Or Windows PowerShell
 $env:DATABASE_URL="postgresql://postgres:<your_postgres_password>@localhost:5432/ai_interview_db"
+
+# Run migrations
+alembic upgrade head
 ```
 
 ### 4. Run Server
@@ -91,8 +94,10 @@ backend/
 ## API Endpoints Reference
 
 ### Auth Routes
-- `POST /auth/register` - Register user
-- `POST /auth/login` - Login user
+- `POST /auth/register` - Register user and return JWT
+- `POST /auth/login` - Login user and return JWT
+- `POST /auth/google` - Google ID token login
+- `GET /auth/me` - Get current user profile (Bearer token)
 
 ### Resume Routes
 - `POST /resume/upload?user_id={id}` - Upload resume
@@ -115,6 +120,31 @@ backend/
 
 ### Dashboard Routes
 - `GET /dashboard/{user_id}` - Get dashboard
+
+### Quiz Routes
+- `POST /quiz/generate?user_id={id}` - Generate adaptive quiz
+- `POST /quiz/{session_id}/submit` - Submit quiz answers
+- `GET /quiz/{session_id}` - Get quiz session details
+
+### Company Prep Routes
+- `POST /company/prepare` - Scrape/cache company interview prep data
+- `GET /company/{company_name}` - Get cached company prep data
+
+### Mock Test Routes
+- `POST /mock-tests/create?user_id={id}` - Create timed mock test
+- `POST /mock-tests/{test_id}/submit` - Submit mock test answers
+- `GET /mock-tests/{test_id}` - Get mock test details
+
+### Analytics Routes
+- `GET /analytics/{user_id}` - Get overall analytics
+
+### AI Interviewer Routes
+- `POST /ai-interviewer/chat` - Simulated interviewer interaction
+
+### Daily Challenges and Leaderboard
+- `GET /challenges/today` - Get today's challenge
+- `POST /challenges/submit?user_id={id}` - Submit challenge response
+- `GET /leaderboard?limit={n}` - Get ranked leaderboard
 
 ## Development
 
@@ -145,8 +175,18 @@ def get_new():
 
 ### Database Migrations
 
-Current setup uses SQLAlchemy to auto-create tables on startup.
-For production, consider using Alembic for migrations.
+Schema is managed with Alembic migrations.
+
+```bash
+# Apply latest migration
+alembic upgrade head
+
+# Create a new migration after model changes
+alembic revision --autogenerate -m "describe change"
+
+# Rollback last migration
+alembic downgrade -1
+```
 
 ## Environment Variables
 

@@ -11,6 +11,7 @@ const features = [
 
 export default function Home() {
   const navigate = useNavigate()
+  const isLoggedIn = Boolean(localStorage.getItem('token'))
 
   return (
     <div className="app-shell">
@@ -44,13 +45,13 @@ export default function Home() {
             </p>
 
             <div className="cta-container">
-              <button className="btn btn-glow" onClick={() => navigate('/resume-upload')}>
+              <button className="btn btn-glow" onClick={() => navigate(isLoggedIn ? '/resume-upload' : '/auth')}>
                 Get Started Free →
               </button>
               <button
                 className="btn btn-outline"
                 style={{ padding: '15px 32px', fontSize: '1rem', borderRadius: 'var(--r-full)' }}
-                onClick={() => navigate('/dashboard')}
+                onClick={() => navigate(isLoggedIn ? '/dashboard' : '/auth')}
               >
                 View Dashboard
               </button>

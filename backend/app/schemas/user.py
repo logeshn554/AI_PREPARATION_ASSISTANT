@@ -1,5 +1,4 @@
 from pydantic import BaseModel, EmailStr
-from typing import Optional
 from datetime import datetime
 
 
@@ -14,6 +13,8 @@ class UserCreate(UserBase):
 
 class UserResponse(UserBase):
     id: int
+    auth_provider: str
+    google_sub: str | None = None
     created_at: datetime
     updated_at: datetime
     
@@ -24,3 +25,13 @@ class UserResponse(UserBase):
 class UserLogin(BaseModel):
     email: EmailStr
     password: str
+
+
+class GoogleAuthRequest(BaseModel):
+    id_token: str
+
+
+class TokenResponse(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
+    user: UserResponse

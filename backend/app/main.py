@@ -1,7 +1,19 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.database import init_db
-from app.routes import auth_router, resume_router, answer_router, questions_router, dashboard_router
+from app.routes import (
+    auth_router,
+    resume_router,
+    answer_router,
+    questions_router,
+    dashboard_router,
+    quiz_router,
+    company_router,
+    mock_test_router,
+    analytics_router,
+    ai_interviewer_router,
+    challenge_router,
+)
 
 app = FastAPI(
     title="AI Interview Preparation System",
@@ -54,3 +66,9 @@ app.include_router(resume_router)
 app.include_router(answer_router)
 app.include_router(questions_router)
 app.include_router(dashboard_router)
+app.include_router(quiz_router)
+app.include_router(company_router)
+app.include_router(mock_test_router)
+app.include_router(analytics_router)
+app.include_router(ai_interviewer_router)
+app.include_router(challenge_router)

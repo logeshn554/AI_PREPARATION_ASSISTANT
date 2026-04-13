@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Text, ForeignKey, JSON
+from sqlalchemy import Column, Integer, String, Text, ForeignKey, JSON, Float
 from sqlalchemy.orm import relationship
 from .base import BaseModel
 
@@ -13,5 +13,6 @@ class Resume(BaseModel):
     skills = Column(JSON, nullable=True)
     experience = Column(JSON, nullable=True)
     projects = Column(JSON, nullable=True)
+    ats_score = Column(Float, nullable=True)
     
     user = relationship("User", back_populates="resumes")

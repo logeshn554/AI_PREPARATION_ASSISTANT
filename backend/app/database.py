@@ -1,14 +1,17 @@
 import os
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
-from app.models.base import Base
 
 DATABASE_URL = os.getenv(
     "DATABASE_URL",
     "postgresql://postgres@localhost:5432/ai_interview_db"
 )
 
-engine = create_engine(DATABASE_URL, echo=False)
+engine_kwargs = {"echo": False}
+if DATABASE_URL.startswith("sqlite"):
+    engine_kwargs["connect_args"] = {"check_same_thread": False}
+
+engine = create_engine(DATABASE_URL, **engine_kwargs)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
@@ -22,5 +25,6 @@ def get_db():
 
 
 def init_db():
-    """Initialize the database."""
-    Base.metadata.create_all(bind=engine)
+    """Verify database connectivity; schema is managed by Alembic migrations."""
+    with engine.connect() as connection:
+        connection.execute(text("SELECT 1"))

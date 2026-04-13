@@ -38,6 +38,7 @@ export default function Dashboard() {
   const avg   = dashboardData?.average_score   || 0
   const total = dashboardData?.total_interviews || 0
   const resumes = dashboardData?.total_resumes  || 0
+  const atsScore = dashboardData?.latest_ats_score
 
   /* ---------- loading ---------- */
   if (loading) {
@@ -115,6 +116,80 @@ export default function Dashboard() {
               <div className="stat-label">Average Score</div>
             </div>
           </div>
+
+          {(atsScore !== null && atsScore !== undefined) && (
+            <div className="card mb-6">
+              <div className="flex-between">
+                <div>
+                  <div className="section-title" style={{ marginBottom: '4px' }}>ATS Resume Score</div>
+                  <h2 style={{ fontSize: '1.05rem', marginBottom: 0 }}>Latest Resume Screening Score</h2>
+                </div>
+                <span className={`score-badge ${atsScore >= 75 ? 'high' : atsScore >= 60 ? 'medium' : 'low'}`}>
+                  {atsScore}%
+                </span>
+              </div>
+            </div>
+          )}
+
+          {dashboardData?.extracted_skills?.length > 0 && (
+            <div className="card mb-6">
+              <div className="section-title" style={{ marginBottom: '8px' }}>Extracted Resume Skills</div>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                {dashboardData.extracted_skills.map((skill, idx) => (
+                  <span key={idx} className="tag tag-blue">{skill}</span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {dashboardData?.skill_gaps?.length > 0 && (
+            <div className="card mb-6">
+              <div className="section-title" style={{ marginBottom: '8px' }}>Skill Gaps</div>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                {dashboardData.skill_gaps.map((gap, idx) => (
+                  <span key={idx} className="tag tag-gold">{gap}</span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {dashboardData?.recommended_learning_paths?.length > 0 && (
+            <div className="card mb-6">
+              <div className="section-title" style={{ marginBottom: '8px' }}>Recommended Learning Paths</div>
+              <div className="grid-2">
+                {dashboardData.recommended_learning_paths.map((item, idx) => (
+                  <div key={idx} className="glass-card">
+                    <h3 style={{ fontSize: '0.95rem', marginBottom: '6px' }}>{item.skill}</h3>
+                    <p style={{ fontSize: '0.84rem' }}>{item.path}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {dashboardData?.suggested_roles?.length > 0 && (
+            <div className="card mb-6">
+              <div className="section-title" style={{ marginBottom: '8px' }}>Role Suggestions</div>
+              <table className="data-table">
+                <thead>
+                  <tr>
+                    <th>Role</th>
+                    <th>Fit Score</th>
+                    <th>Matched Skills</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {dashboardData.suggested_roles.map((row, idx) => (
+                    <tr key={idx}>
+                      <td>{row.role}</td>
+                      <td>{row.fit_score}%</td>
+                      <td>{(row.matched_skills || []).join(', ')}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
 
           {/* ── Empty / onboarding state ── */}
           {total === 0 && !error && (
@@ -232,6 +307,50 @@ export default function Dashboard() {
               <h3 style={{ fontSize: '1rem', marginBottom: 'var(--s2)' }}>Start Mock Interview</h3>
               <p style={{ fontSize: '0.845rem' }}>
                 Jump straight into a role-specific practice session with AI-generated questions.
+              </p>
+            </div>
+            <div
+              className="glass-card"
+              style={{ cursor: 'pointer' }}
+              onClick={() => navigate('/quiz')}
+            >
+              <div style={{ fontSize: '2rem', marginBottom: 'var(--s3)' }}>🧪</div>
+              <h3 style={{ fontSize: '1rem', marginBottom: 'var(--s2)' }}>Skill Quiz</h3>
+              <p style={{ fontSize: '0.845rem' }}>
+                Run adaptive aptitude, technical, coding, and HR quizzes based on your profile.
+              </p>
+            </div>
+            <div
+              className="glass-card"
+              style={{ cursor: 'pointer' }}
+              onClick={() => navigate('/company-prep')}
+            >
+              <div style={{ fontSize: '2rem', marginBottom: 'var(--s3)' }}>🏢</div>
+              <h3 style={{ fontSize: '1rem', marginBottom: 'var(--s2)' }}>Company Prep</h3>
+              <p style={{ fontSize: '0.845rem' }}>
+                Get company-specific interview process details, sample questions, and preparation tips.
+              </p>
+            </div>
+            <div
+              className="glass-card"
+              style={{ cursor: 'pointer' }}
+              onClick={() => navigate('/mock-test')}
+            >
+              <div style={{ fontSize: '2rem', marginBottom: 'var(--s3)' }}>⏱️</div>
+              <h3 style={{ fontSize: '1rem', marginBottom: 'var(--s2)' }}>Timed Mock Test</h3>
+              <p style={{ fontSize: '0.845rem' }}>
+                Practice under realistic time constraints with auto-evaluated mixed-question tests.
+              </p>
+            </div>
+            <div
+              className="glass-card"
+              style={{ cursor: 'pointer' }}
+              onClick={() => navigate('/insights')}
+            >
+              <div style={{ fontSize: '2rem', marginBottom: 'var(--s3)' }}>📈</div>
+              <h3 style={{ fontSize: '1rem', marginBottom: 'var(--s2)' }}>Analytics</h3>
+              <p style={{ fontSize: '0.845rem' }}>
+                View detailed progress trends, weak areas, and timing performance across all modules.
               </p>
             </div>
           </div>

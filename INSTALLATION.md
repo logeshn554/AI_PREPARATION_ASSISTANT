@@ -78,9 +78,6 @@ pg_ctl -D "C:\Program Files\PostgreSQL\15\data" start
 
 # Create database
 psql -U postgres -c "CREATE DATABASE ai_interview_db;"
-
-# Run initialization script
-psql -U postgres -d ai_interview_db -f database/init.sql
 ```
 
 ### macOS
@@ -91,9 +88,6 @@ brew services start postgresql
 
 # Create database
 createdb ai_interview_db
-
-# Run initialization script
-psql -U $(whoami) -d ai_interview_db -f database/init.sql
 ```
 
 ### Linux
@@ -104,9 +98,6 @@ sudo systemctl start postgresql
 
 # Create database
 sudo -u postgres createdb ai_interview_db
-
-# Run initialization script
-sudo -u postgres psql -d ai_interview_db -f database/init.sql
 ```
 
 ## Step 4: Backend Setup
@@ -138,6 +129,9 @@ set DATABASE_URL=postgresql://postgres:<your_postgres_password>@localhost:5432/a
 # Or macOS/Linux
 export DATABASE_URL="postgresql://postgres:<your_postgres_password>@localhost:5432/ai_interview_db"
 
+# Apply Alembic migrations
+alembic upgrade head
+
 # Test run
 python run.py
 
@@ -156,6 +150,7 @@ npm install
 
 # Create .env file
 echo "VITE_API_URL=http://localhost:8000" > .env
+echo "VITE_GOOGLE_CLIENT_ID=<your-google-client-id>" >> .env
 
 # Run development server
 npm run dev

@@ -7,6 +7,7 @@ from app.utils.resume_parser import (
     extract_text_from_docx,
     extract_resume_data,
     parse_skills_from_text,
+    calculate_ats_score,
 )
 
 
@@ -33,14 +34,18 @@ class ResumeService:
         
         parsed_data = extract_resume_data(text)
         skills = parse_skills_from_text(text)
+        experience = parsed_data.get("experience", [])
+        projects = parsed_data.get("projects", [])
+        ats_score = calculate_ats_score(text, skills, projects, experience)
         
         db_resume = Resume(
             user_id=user_id,
             file_name=file_name,
             parsed_data=parsed_data,
             skills=skills,
-            experience=parsed_data.get("entities", []),
-            projects=parsed_data.get("entities", []),
+            experience=experience,
+            projects=projects,
+            ats_score=ats_score,
         )
         
         db.add(db_resume)

@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
+from uuid import uuid4
 from app.models import User
 from app.schemas import UserCreate
 from app.utils.auth import hash_password, verify_password
@@ -16,7 +17,8 @@ class UserService:
             db_user = User(
                 name=user_create.name,
                 email=user_create.email,
-                password_hash=hashed_password
+                password_hash=hashed_password,
+                auth_provider="email"
             )
             db.add(db_user)
             db.commit()
@@ -47,3 +49,41 @@ class UserService:
             return None
         
         return user
+
+    @staticmethod
+    def get_or_create_google_user(
+        db: Session,
+        email: str,
+        name: str,
+        google_sub: str
+    ) -> User:
+        """Get existing Google user or create a new one mapped to Google subject."""
+        user = db.query(User).filter(User.google_sub == google_sub).first()
+        if user:
+            return user
+
+        user = db.query(User).filter(User.email == email).first()
+        if user:
+            user.google_sub = google_sub
+            user.auth_provider = "google"
+            db.commit()
+            db.refresh(user)
+            return user
+
+        try:
+            # Generate an internal password hash for Google-created accounts.
+            synthetic_password = f"google-{uuid4()}"
+            new_user = User(
+                name=name,
+                email=email,
+                password_hash=hash_password(synthetic_password),
+                auth_provider="google",
+                google_sub=google_sub,
+            )
+            db.add(new_user)
+            db.commit()
+            db.refresh(new_user)
+            return new_user
+        except IntegrityError:
+            db.rollback()
+            raise ValueError("A user conflict occurred while processing Google login")
