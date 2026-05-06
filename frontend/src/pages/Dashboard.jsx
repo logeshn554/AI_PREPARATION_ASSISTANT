@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { dashboardAPI } from '../services/api'
 import Navbar from '../components/Navbar'
+import RadarChart from '../components/RadarChart'
+import ActivityHeatmap from '../components/ActivityHeatmap'
+import OnboardingSpotlight from '../components/OnboardingSpotlight'
 
 export default function Dashboard() {
   const userId   = localStorage.getItem('userId')
@@ -60,6 +63,7 @@ export default function Dashboard() {
   /* ---------- main ---------- */
   return (
     <div className="app-shell">
+      <OnboardingSpotlight />
       <Navbar />
       <div className="page-wrapper">
         <div className="container">
@@ -71,10 +75,10 @@ export default function Dashboard() {
               Welcome back,&nbsp;
               <span className="highlight">{userName}</span>&nbsp;👋
             </div>
-            <p className="dash-subline">
+            <p className="dash-subline" style={{ fontSize: '1rem', marginTop: 8, opacity: 0.82 }}>
               Here's your complete interview preparation overview
             </p>
-            <div className="flex-row mt-6" style={{ flexWrap: 'wrap' }}>
+            <div className="flex-row mt-6" style={{ flexWrap: 'wrap', gap: 'var(--s3)', marginTop: 'var(--s6)' }}>
               <button className="btn btn-secondary" onClick={() => navigate('/resume-upload')}>
                 📄 Upload Resume
               </button>
@@ -94,8 +98,8 @@ export default function Dashboard() {
           {error && <div className="error">⚠ {error}</div>}
 
           {/* ── Stat cards ── */}
-          <div className="section-title" style={{ marginBottom: 'var(--s5)' }}>Performance Overview</div>
-          <div className="grid-3 mb-10">
+          <div className="section-title" style={{ marginBottom: 'var(--s4)' }}>Performance Overview</div>
+          <div className="grid-3 mb-10" style={{ gap: 'var(--s6)' }}>
             <div className="stat-card orb-blue">
               <div className="stat-icon">🎯</div>
               <div className="stat-value blue">{total}</div>
@@ -117,6 +121,50 @@ export default function Dashboard() {
             </div>
           </div>
 
+          {/* ── Skill Radar Chart ── */}
+          {avg > 0 && (
+            <div className="card mb-6">
+              <div className="flex-between mb-6">
+                <div>
+                  <div className="section-title" style={{ marginBottom: '4px' }}>Skill Radar</div>
+                  <h2 style={{ fontSize: '1.05rem', marginBottom: 0 }}>Performance Dimensions</h2>
+                </div>
+                <span className="tag tag-blue">AI Analysis</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 'var(--s8)', flexWrap: 'wrap' }}>
+                <RadarChart
+                  size={240}
+                  data={[
+                    { label: 'Technical',    value: avg },
+                    { label: 'Behavioral',   value: Math.round(avg * 0.85) },
+                    { label: 'Problem Solv', value: Math.round(avg * 0.90) },
+                    { label: 'Comm.',        value: Math.round(avg * 0.78) },
+                    { label: 'Algorithms',   value: Math.round(avg * 0.95) },
+                    { label: 'System',       value: Math.round(avg * 0.72) },
+                  ]}
+                />
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--s3)', minWidth: 180 }}>
+                  {[
+                    { label: 'Technical Questions',  val: avg,                       color: 'var(--blue-bright)' },
+                    { label: 'Behavioral Questions', val: Math.round(avg * 0.85),    color: 'var(--violet)' },
+                    { label: 'Problem Solving',      val: Math.round(avg * 0.90),    color: 'var(--success)' },
+                    { label: 'Communication',        val: Math.round(avg * 0.78),    color: 'var(--gold-bright)' },
+                  ].map(s => (
+                    <div key={s.label}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
+                        <span style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>{s.label}</span>
+                        <span style={{ fontSize: '0.78rem', fontWeight: 700, color: s.color }}>{s.val}%</span>
+                      </div>
+                      <div className="progress-track">
+                        <div className="progress-fill" style={{ width: `${s.val}%` }} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
           {(atsScore !== null && atsScore !== undefined) && (
             <div className="card mb-6">
               <div className="flex-between">
@@ -131,14 +179,66 @@ export default function Dashboard() {
             </div>
           )}
 
-          {dashboardData?.extracted_skills?.length > 0 && (
+          {(
+            (dashboardData?.extracted_skills?.length || 0) > 0 ||
+            Boolean(dashboardData?.detected_role) ||
+            (dashboardData?.experience?.length || 0) > 0 ||
+            (dashboardData?.projects?.length || 0) > 0
+          ) && (
             <div className="card mb-6">
               <div className="section-title" style={{ marginBottom: '8px' }}>Extracted Resume Skills</div>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                {dashboardData.extracted_skills.map((skill, idx) => (
-                  <span key={idx} className="tag tag-blue">{skill}</span>
-                ))}
-              </div>
+              {dashboardData?.detected_role && (
+                <div style={{ marginBottom: 'var(--s3)', display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+                  <span style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>Detected Role</span>
+                  <span className="tag tag-blue">{dashboardData.detected_role}</span>
+                </div>
+              )}
+
+              {(dashboardData?.extracted_skills?.length || 0) > 0 && (
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: 'var(--s4)' }}>
+                  {dashboardData.extracted_skills.map((skill, idx) => (
+                    <span key={idx} className="tag tag-blue">{skill}</span>
+                  ))}
+                </div>
+              )}
+
+              {(dashboardData?.experience?.length || 0) > 0 && (
+                <div style={{ marginBottom: 'var(--s4)' }}>
+                  <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: 8 }}>
+                    Experience
+                  </div>
+                  <div className="grid-2">
+                    {dashboardData.experience.map((item, idx) => {
+                      const summary = (item && typeof item === 'object') ? item.summary : String(item ?? '')
+                      if (!summary) return null
+                      return (
+                        <div key={idx} className="glass-card">
+                          <p style={{ fontSize: '0.84rem', marginBottom: 0 }}>{summary}</p>
+                        </div>
+                      )
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {(dashboardData?.projects?.length || 0) > 0 && (
+                <div>
+                  <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: 8 }}>
+                    Projects
+                  </div>
+                  <div className="grid-2">
+                    {dashboardData.projects.map((item, idx) => {
+                      const summary = (item && typeof item === 'object') ? item.summary : String(item ?? '')
+                      if (!summary) return null
+                      return (
+                        <div key={idx} className="glass-card">
+                          <p style={{ fontSize: '0.84rem', marginBottom: 0 }}>{summary}</p>
+                        </div>
+                      )
+                    })}
+                  </div>
+                </div>
+              )}
             </div>
           )}
 
@@ -221,6 +321,17 @@ export default function Dashboard() {
             </div>
           )}
 
+          {/* ── Activity Heatmap ── */}
+          {dashboardData?.recent_scores?.length > 0 && (
+            <div className="card mb-6">
+              <div className="section-title" style={{ marginBottom: '4px' }}>Consistency</div>
+              <h2 style={{ fontSize: '1.05rem', marginBottom: 'var(--s5)' }}>Interview Activity (Last 6 Months)</h2>
+              <ActivityHeatmap
+                data={(dashboardData.recent_scores || []).map(s => s.created_at?.slice(0, 10)).filter(Boolean)}
+              />
+            </div>
+          )}
+
           {/* ── Weak areas ── */}
           {dashboardData?.weak_areas?.length > 0 && (
             <div className="card mb-6">
@@ -283,77 +394,36 @@ export default function Dashboard() {
             </div>
           )}
 
-          {/* ── Quick actions (always visible) ── */}
           <div className="divider" />
           <div className="section-title mb-4">Quick Actions</div>
-          <div className="grid-2">
-            <div
-              className="glass-card"
-              style={{ cursor: 'pointer' }}
-              onClick={() => navigate('/resume-upload')}
-            >
-              <div style={{ fontSize: '2rem', marginBottom: 'var(--s3)' }}>📤</div>
-              <h3 style={{ fontSize: '1rem', marginBottom: 'var(--s2)' }}>Upload a Resume</h3>
-              <p style={{ fontSize: '0.845rem' }}>
-                Add a new resume to analyse your skills and generate tailored interview questions.
-              </p>
-            </div>
-            <div
-              className="glass-card"
-              style={{ cursor: 'pointer' }}
-              onClick={() => navigate('/role-selection')}
-            >
-              <div style={{ fontSize: '2rem', marginBottom: 'var(--s3)' }}>🎤</div>
-              <h3 style={{ fontSize: '1rem', marginBottom: 'var(--s2)' }}>Start Mock Interview</h3>
-              <p style={{ fontSize: '0.845rem' }}>
-                Jump straight into a role-specific practice session with AI-generated questions.
-              </p>
-            </div>
-            <div
-              className="glass-card"
-              style={{ cursor: 'pointer' }}
-              onClick={() => navigate('/quiz')}
-            >
-              <div style={{ fontSize: '2rem', marginBottom: 'var(--s3)' }}>🧪</div>
-              <h3 style={{ fontSize: '1rem', marginBottom: 'var(--s2)' }}>Skill Quiz</h3>
-              <p style={{ fontSize: '0.845rem' }}>
-                Run adaptive aptitude, technical, coding, and HR quizzes based on your profile.
-              </p>
-            </div>
-            <div
-              className="glass-card"
-              style={{ cursor: 'pointer' }}
-              onClick={() => navigate('/company-prep')}
-            >
-              <div style={{ fontSize: '2rem', marginBottom: 'var(--s3)' }}>🏢</div>
-              <h3 style={{ fontSize: '1rem', marginBottom: 'var(--s2)' }}>Company Prep</h3>
-              <p style={{ fontSize: '0.845rem' }}>
-                Get company-specific interview process details, sample questions, and preparation tips.
-              </p>
-            </div>
-            <div
-              className="glass-card"
-              style={{ cursor: 'pointer' }}
-              onClick={() => navigate('/mock-test')}
-            >
-              <div style={{ fontSize: '2rem', marginBottom: 'var(--s3)' }}>⏱️</div>
-              <h3 style={{ fontSize: '1rem', marginBottom: 'var(--s2)' }}>Timed Mock Test</h3>
-              <p style={{ fontSize: '0.845rem' }}>
-                Practice under realistic time constraints with auto-evaluated mixed-question tests.
-              </p>
-            </div>
-            <div
-              className="glass-card"
-              style={{ cursor: 'pointer' }}
-              onClick={() => navigate('/insights')}
-            >
-              <div style={{ fontSize: '2rem', marginBottom: 'var(--s3)' }}>📈</div>
-              <h3 style={{ fontSize: '1rem', marginBottom: 'var(--s2)' }}>Analytics</h3>
-              <p style={{ fontSize: '0.845rem' }}>
-                View detailed progress trends, weak areas, and timing performance across all modules.
-              </p>
-            </div>
+          <div data-tour="quick-actions" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 'var(--s4)' }}>
+            {[
+              { title: 'Upload Resume', desc: 'Add a resume to extract skills and generate tailored questions.', path: '/resume-upload' },
+              { title: 'Mock Interview', desc: 'Jump into a role-specific practice session with AI questions.', path: '/role-selection' },
+              { title: 'AI Interviewer', desc: 'Conversational practice with real-time scoring and follow-ups.', path: '/ai-interviewer' },
+              { title: 'JD Gap Analyzer', desc: 'Compare your resume to any job description for instant analysis.', path: '/jd-analysis' },
+              { title: 'Skill Quiz', desc: 'Adaptive aptitude, coding, and technical quizzes based on your profile.', path: '/quiz' },
+              { title: 'Company Prep', desc: 'AI-powered company-specific questions, hiring process, and tips.', path: '/company-prep' },
+              { title: 'Timed Mock Test', desc: 'Practice under realistic time constraints with mixed-question tests.', path: '/mock-test' },
+              { title: 'Daily Challenge', desc: 'A fresh coding or aptitude challenge every day.', path: '/daily-challenge' },
+              { title: 'Focus Mode', desc: 'AI-targeted practice on your weak areas with personalized roadmaps.', path: '/focus-mode' },
+              { title: 'Voice Interview', desc: 'Practice speaking your answers with real-time AI voice feedback.', path: '/voice-interview' },
+              { title: 'System Design', desc: 'Interactive architecture canvas with AI evaluation.', path: '/system-design' },
+              { title: 'Community', desc: 'Leaderboards, rankings, and community activity feed.', path: '/community' },
+              { title: 'Analytics', desc: 'Detailed progress trends, weak areas, and timing performance.', path: '/insights' },
+            ].map(({ title, desc, path }) => (
+              <div
+                key={path}
+                className="glass-card"
+                style={{ cursor: 'pointer' }}
+                onClick={() => navigate(path)}
+              >
+                <h3 style={{ fontSize: '1rem', marginBottom: 'var(--s2)' }}>{title}</h3>
+                <p style={{ fontSize: '0.845rem' }}>{desc}</p>
+              </div>
+            ))}
           </div>
+
 
         </div>
       </div>

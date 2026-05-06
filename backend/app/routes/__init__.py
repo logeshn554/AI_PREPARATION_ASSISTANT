@@ -9,6 +9,9 @@ from .mock_test import router as mock_test_router
 from .analytics import router as analytics_router
 from .ai_interviewer import router as ai_interviewer_router
 from .challenge import router as challenge_router
+from .jd_analysis import router as jd_analysis_router
+from .chat import router as chat_router
+from .learning_path import router as learning_path_router
 
 __all__ = [
     "auth_router",
@@ -22,4 +25,7 @@ __all__ = [
     "analytics_router",
     "ai_interviewer_router",
     "challenge_router",
+    "jd_analysis_router",
+    "chat_router",
+    "learning_path_router",
 ]

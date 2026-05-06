@@ -45,8 +45,8 @@ export const resumeAPI = {
 }
 
 export const questionAPI = {
-  generateQuestions: (role, skills, numQuestions = 10) =>
-    api.post('/questions/generate', { role, skills, num_questions: numQuestions }),
+  generateQuestions: (role, skills, numQuestions = 10, questionTypes = ['aptitude','logical','coding']) =>
+    api.post('/questions/generate', { role, skills, num_questions: numQuestions, question_types: questionTypes }),
   getQuestionsByRole: (role) =>
     api.get(`/questions/role/${role}`),
   getRandomQuestions: (role, limit = 10) =>
@@ -144,6 +144,27 @@ export const challengeAPI = {
     }),
   leaderboard: (limit = 20) =>
     api.get(`/leaderboard?limit=${limit}`),
+}
+
+export const jdAnalysisAPI = {
+  analyze: (jobDescription, role = '', resumeText = '', skills = [], userId = null) =>
+    api.post('/jd-analysis/analyze', {
+      job_description: jobDescription,
+      role: role || null,
+      resume_text: resumeText || null,
+      skills,
+      user_id: userId ? Number(userId) : null,
+    }),
+}
+
+export const chatAPI = {
+  sendMessage: (message, history = []) =>
+    api.post('/chat/message', { message, history }),
+}
+
+export const personalizationAPI = {
+  getFocusMode: (userId) =>
+    api.get(`/personalization/focus-mode/${userId}`),
 }
 
 export default api
